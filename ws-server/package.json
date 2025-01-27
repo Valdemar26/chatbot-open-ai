@@ -2,6 +2,7 @@
   "name": "ws-server",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -11,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "openai": "^4.80.1"
+    "dotenv": "^16.4.7",
+    "openai": "^4.80.1",
+    "ws": "^8.18.0"
   }
 }
