@@ -12,6 +12,30 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Функція для виклику OpenAI API
+async function getChatCompletion(messages, model = 'gpt-3.5-turbo') {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: model,
+      messages: messages,
+    });
+    return completion.choices[0].message.content;
+  } catch (error) {
+    console.error('Error with OpenAI API:', error);
+
+    // Перевірка на помилку з квотою
+    if (error.code === 'insufficient_quota') {
+      return 'Ваша квота закінчилася. Перевірте тарифний план.';
+    } else if (error.code === 'model_not_found') {
+      return 'Модель GPT-4o-mini недоступна. Використовуйте іншу модель.';
+    } else if (error.code === 429) {
+      return 'Перевищено ліміт запитів. Спробуйте пізніше.';
+    } else {
+      return 'Сталася помилка з OpenAI API.';
+    }
+  }
+}
+
 // Створюємо сервер WebSocket
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -42,20 +66,49 @@ wss.on('connection', (ws) => {
       }
       ws.send(JSON.stringify({ user: 'Bot', text: response }));
     } else {
+
       // Інтеграція OpenAI
       try {
-        const completion = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
-          messages: [
+        // Основний запит до OpenAI
+        let botReply = await getChatCompletion(
+          [
             { role: 'system', content: 'Ти - розумний помічник.' },
             { role: 'user', content: message.text },
           ],
-        });
-        const botReply = completion.choices[0].message.content;
+          'gpt-3.5-turbo' // Спочатку використовуємо менш ресурсну модель
+        );
         ws.send(JSON.stringify({ user: 'Bot', text: botReply }));
       } catch (error) {
-        console.error('Error with OpenAI API:', error);
-        ws.send(JSON.stringify({ user: 'Bot', text: 'Сталася помилка з OpenAI.' }));
+        // Якщо сталася помилка, пробуємо переключитися на іншу модель
+        if (error.message.includes('Перевищено ліміт')) {
+          try {
+            console.log('Перемикаємося на gpt-4o-mini...');
+            let botReply = await getChatCompletion(
+              [
+                { role: 'system', content: 'Ти - розумний помічник.' },
+                { role: 'user', content: message.text },
+              ],
+              'gpt-4o-mini' // Використовуємо більш потужну модель
+            );
+            ws.send(JSON.stringify({ user: 'Bot', text: botReply }));
+          } catch (innerError) {
+            console.error('Не вдалося отримати відповідь від OpenAI:', innerError);
+            ws.send(
+              JSON.stringify({
+                user: 'Bot',
+                text: 'На жаль, зараз я не можу відповісти. Спробуй пізніше!',
+              })
+            );
+          }
+        } else {
+          console.error('Не вдалося обробити запит:', error);
+          ws.send(
+            JSON.stringify({
+              user: 'Bot',
+              text: 'Сталася технічна помилка. Спробуй пізніше!',
+            })
+          );
+        }
       }
     }
   });

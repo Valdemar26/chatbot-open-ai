@@ -5,6 +5,46 @@
   background: #f9f9f9;
 
   .message {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
+
+    &.user-message {
+      align-self: flex-end;
+      background: #d1f7c4;
+    }
+
+    &.bot-message {
+      align-self: flex-start;
+      background: #f1f1f1;
+      float: right;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .message-user {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .message-text {
+        font-size: 14px;
+      }
+    }
+
+    .message-timestamp {
+      font-size: 12px;
+      text-align: right;
+      margin-top: 5px;
+      color: #888;
+    }
   }
 }
