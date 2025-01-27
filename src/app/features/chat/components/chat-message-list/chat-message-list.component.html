@@ -1,6 +1,13 @@
 <div class="message-list">
-  <div *ngFor="let message of messages" class="message">
-    <strong>{{ message.user }}</strong>: {{ message.text }}
-    <small>{{ message.timestamp | date: 'shortTime' }}</small>
+  <div
+    *ngFor="let message of messages"
+    class="message"
+    [ngClass]="{ 'user-message': message.user === 'User', 'bot-message': message.user === 'Bot' }"
+  >
+    <div class="message-content">
+      <strong class="message-user">{{ message.user }}</strong>
+      <p class="message-text">{{ message.text }}</p>
+    </div>
+    <small class="message-timestamp">{{ message.timestamp | date: 'shortTime' }}</small>
   </div>
 </div>

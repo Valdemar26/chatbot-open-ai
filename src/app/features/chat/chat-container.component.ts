@@ -4,6 +4,7 @@ import {ChatInputComponent} from './components/chat-input/chat-input.component';
 import {ChatMessage} from './models/chat-message.interface';
 import {Subscription} from 'rxjs';
 import {WebSocketService} from './services/web-socket.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-chat-container',
@@ -20,15 +21,37 @@ export class ChatContainerComponent implements OnInit, OnDestroy {
 
   constructor(
     private webSocketService: WebSocketService,
+    private router: Router
   ) {
   }
 
   ngOnInit(): void {
+    const username = localStorage.getItem('username');
+
+    if (!username) {
+      this.router.navigate(['/login']);
+    }
+
     this.subscription = this.webSocketService.getMessages().subscribe(
-      (message) => {
-        this.messages.push(message); // Додаємо нові повідомлення
+      (message: ChatMessage) => {
+        if (message.error) {
+          this.messages.push({
+            user: 'Bot',
+            text: `Сталася помилка: ${message.error.message}`,
+            timestamp: new Date(),
+          });
+        } else {
+          this.messages.push(message); // Додаємо нові повідомлення
+        }
       },
-      (error) => console.error('WebSocket error:', error)
+      (error) => {
+        console.error('WebSocket error:', error);
+        this.messages.push({
+          user: 'Bot',
+          text: 'Сталася помилка з сервером.',
+          timestamp: new Date(),
+        });
+      }
     );
   }
 
