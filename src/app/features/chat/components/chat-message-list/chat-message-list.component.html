@@ -1,0 +1,6 @@
+<div class="message-list">
+  <div *ngFor="let message of messages" class="message">
+    <strong>{{ message.user }}</strong>: {{ message.text }}
+    <small>{{ message.timestamp | date: 'shortTime' }}</small>
+  </div>
+</div>
