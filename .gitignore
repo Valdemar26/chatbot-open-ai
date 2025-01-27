@@ -44,3 +44,11 @@ Thumbs.db
 # WS Server
 ws-server/node_modules
 ws-server/package-lock.json
+
+# package-lock
+package-lock.json
+
+# Environment
+src/app/environment/
+ws-server/.env
+src/app/environment/environment.ts
