@@ -1,4 +1,6 @@
 .message-list {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   overflow-y: auto;
   padding: 10px;
@@ -13,15 +15,18 @@
     max-width: 70%;
     word-wrap: break-word;
 
+    &:not(:first-child) {
+      margin-top: 10px;
+    }
+
     &.user-message {
-      align-self: flex-end;
+      align-self: flex-start;
       background: #d1f7c4;
     }
 
     &.bot-message {
-      align-self: flex-start;
+      align-self: flex-end;
       background: #f1f1f1;
-      float: right;
     }
 
     .message-content {
