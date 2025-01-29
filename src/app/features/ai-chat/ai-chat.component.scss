@@ -1,0 +1,37 @@
+.ai-chat {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  .messages {
+    height: 300px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  .message {
+    padding: 5px;
+    border-radius: 3px;
+    background: #f1f1f1;
+    margin-bottom: 5px;
+  }
+
+  input {
+    padding: 5px;
+  }
+
+  button {
+    margin-top: 5px;
+    padding: 5px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+}
