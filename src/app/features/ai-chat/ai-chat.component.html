@@ -1,0 +1,12 @@
+<div class="ai-chat">
+  <div class="messages">
+    <div *ngFor="let msg of messages()" class="message">
+      <strong>{{ msg.user }}:</strong> {{ msg.text }}
+    </div>
+  </div>
+  <input #msgInput type="text" placeholder="Type your message..." />
+  <button
+    (click)="sendMessage(msgInput.value)"
+    (keyup.enter)="sendMessage(msgInput.value)"
+  >Send message</button>
+</div>

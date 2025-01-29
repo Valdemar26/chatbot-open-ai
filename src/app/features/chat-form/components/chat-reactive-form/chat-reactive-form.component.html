@@ -1,0 +1,20 @@
+<div class="container">
+  <h2>Reactive Forms Chat + Signals</h2>
+  <form [formGroup]="chatForm" (ngSubmit)="sendMessage()">
+    <input
+      type="text"
+      formControlName="message"
+      placeholder="Type your message"
+    />
+    <button type="submit" [disabled]="chatForm.invalid">
+      Send
+    </button>
+  </form>
+
+  <div class="mt-6">
+    <h3>Message history:</h3>
+    <ul>
+      <li *ngFor="let msg of chatHistory()">{{ msg }}</li>
+    </ul>
+  </div>
+</div>
