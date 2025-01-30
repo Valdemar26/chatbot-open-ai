@@ -4,9 +4,11 @@
       <strong>{{ msg.user }}:</strong> {{ msg.text }}
     </div>
   </div>
-  <input #msgInput type="text" placeholder="Type your message..." />
-  <button
-    (click)="sendMessage(msgInput.value)"
-    (keyup.enter)="sendMessage(msgInput.value)"
-  >Send message</button>
+  <input
+    #messageInput
+    type="text"
+    placeholder="Type your message..."
+    (keyup.enter)="sendMessage(messageInput.value)"
+  />
+  <button (click)="sendMessage(messageInput.value)">Send message</button>
 </div>

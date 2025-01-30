@@ -1,6 +1,5 @@
-import {Component, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, effect, ElementRef, signal, ViewChild} from '@angular/core';
 import {AiChatMessage} from './models/ai-chat-message.interface';
-import {Subscription} from 'rxjs';
 import {AiWebSocketService} from './service/ai-web-socket.service';
 import {NgForOf} from '@angular/common';
 
@@ -12,29 +11,33 @@ import {NgForOf} from '@angular/common';
   templateUrl: './ai-chat.component.html',
   styleUrl: './ai-chat.component.scss'
 })
-export class AiChatComponent implements OnInit, OnDestroy {
+export class AiChatComponent {
+  @ViewChild('messageInput') messageInput!: ElementRef<HTMLInputElement>;
+
   messages = signal<AiChatMessage[]>([]);
-  private subscription!: Subscription;
 
-  constructor(private aiWebSocketService: AiWebSocketService) {}
+  constructor(private aiWebSocketService: AiWebSocketService) {
 
-  ngOnInit(): void {
-    this.subscription = this.aiWebSocketService.getMessages().subscribe((msgs: AiChatMessage[]) => {
-      this.messages.set(msgs);
+    // Реактивно слухаємо повідомлення через Signal Effect
+    effect(() => {
+      this.aiWebSocketService.getMessages().subscribe((newMessages: AiChatMessage[]) => {
+        this.messages.update((msgs) => [...msgs, ...newMessages]);
+      });
     });
   }
 
   sendMessage(text: string): void {
-    console.log('sendMessage: ', text);
+    if (!text.trim()) return;
+
     const message: AiChatMessage = {
       user: 'User',
       text,
       timestamp: new Date().toISOString(),
     };
     this.aiWebSocketService.sendMessage(message);
-  }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.messages.update((msgs) => [...msgs, message]);
+
+    this.messageInput.nativeElement.value = '';
   }
 }
