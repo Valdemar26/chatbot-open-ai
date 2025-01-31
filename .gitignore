@@ -52,3 +52,8 @@ package-lock.json
 src/app/environment/
 ws-server/.env
 src/app/environment/environment.ts
+
+# Firebase
+.firebaserc
+firebase.json
+.firebase
