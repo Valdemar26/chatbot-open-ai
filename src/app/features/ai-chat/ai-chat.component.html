@@ -1,14 +1,13 @@
-<div class="ai-chat">
-  <div class="messages">
-    <div *ngFor="let msg of messages()" class="message">
+<div class="ai-chat" #chatContainer>
+  <ul>
+    <li *ngFor="let msg of messages()">
       <strong>{{ msg.user }}:</strong> {{ msg.text }}
-    </div>
-  </div>
-  <input
-    #messageInput
-    type="text"
-    placeholder="Type your message..."
-    (keyup.enter)="sendMessage(messageInput.value)"
-  />
-  <button (click)="sendMessage(messageInput.value)">Send message</button>
+      <span *ngIf="msg.timestamp" class="timestamp">({{ formatTimestamp(msg.timestamp) }})</span>
+    </li>
+  </ul>
+
+  <input #messageInput type="text" (keydown.enter)="sendMessage(messageInput.value)" placeholder="Напишіть повідомлення...">
+  <button (click)="sendMessage(messageInput.value)">Відправити</button>
 </div>
+
+
